@@ -9,33 +9,46 @@ let attempts = 1
 
 // Events
 tryButton.addEventListener('click', handleTryClick)
-againButton.addEventListener('click', function() {
-    screen1.classList.remove('hide')
-    screen2.classList.add('hide')
-    aleatoryNumber = Math.round(Math.random() * 10)
-    attempts = 1
-})
+againButton.addEventListener('click', handleAgainClick)
+document.addEventListener('keydown', enterClick)
 
 //Functions
 function handleTryClick(event) {
     event.preventDefault()
     
-    console.log(aleatoryNumber)
-    
     const inputText = document.querySelector('#input-number')
-    const inputNumber = parseInt(inputText.value)
+    const inputNumber = Number(inputText.value)
     const textAgain = document.querySelector('.screen2 h2')
+    const conditions = isNaN(inputNumber) || !Number.isInteger(inputNumber) || inputText.value === "" || inputNumber > 10 || inputNumber < 0
     
-    if (isNaN(inputNumber)) {
+    if (conditions) {
         alert(`Erro de digitação, tente novamente.`)
-    } else if (aleatoryNumber === inputNumber) {
-        screen1.classList.add('hide')
-        screen2.classList.remove('hide')
-        textAgain.innerText = `Acertou em ${attempts} tentativas!`
     } else {
-        alert('Você errou, tente novamente.')
+        console.log(aleatoryNumber)
+        if (aleatoryNumber === inputNumber) {
+            toggleScreen()
+            textAgain.innerText = `Acertou em ${attempts} tentativas!`
+        } else {
+            alert('Você errou, tente novamente.')
+        }        
+        inputText.value = ""
+        attempts++
     }
-    
-    inputText.value = ""
-    attempts++
+}
+
+function handleAgainClick () {
+    toggleScreen()
+    aleatoryNumber = Math.round(Math.random() * 10)
+    attempts = 1
+}
+
+function toggleScreen() {
+    screen1.classList.toggle('hide')
+    screen2.classList.toggle('hide')
+}
+
+function enterClick(e) {
+    if (e.key === 'Enter' && screen1.classList.contains('hide')) {
+        handleAgainClick()
+    }
 }
